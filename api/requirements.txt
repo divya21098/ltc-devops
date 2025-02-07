@@ -1,4 +1,4 @@
 fastapi 
-azure-cosmos 
+boto3
 uvicorn
 python-dotenv

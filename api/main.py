@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from azure.cosmos import CosmosClient
+import boto3
 from dotenv import load_dotenv
 import os
 from typing import Optional
@@ -9,7 +9,6 @@ from typing import Optional
 load_dotenv()
 
 app = FastAPI()
-
 
 # Enable CORS
 app.add_middleware(
@@ -20,18 +19,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize the Cosmos DB client using environment variables
-endpoint = os.getenv("CosmosDBEndpoint")
-key = os.getenv("CosmosDBKey")
+# Initialize AWS DynamoDB client
+aws_access_key = os.getenv("AWS_ACCESS_KEY_ID")
+aws_secret_key = os.getenv("AWS_SECRET_ACCESS_KEY")
+aws_region = os.getenv("AWS_REGION")
 
-if not endpoint or not key:
-    raise ValueError("CosmosDBEndpoint and CosmosDBKey must be set in the .env file")
+if not aws_access_key or not aws_secret_key or not aws_region:
+    raise ValueError("AWS credentials and region must be set in the .env file")
 
-client = CosmosClient(endpoint, key)
+dynamodb = boto3.resource(
+    "dynamodb",
+    aws_access_key_id=aws_access_key,
+    aws_secret_access_key=aws_secret_key,
+    region_name=aws_region
+)
 
-# Get a reference to the database and container
-database = client.get_database_client("TvShows")
-container = database.get_container_client("TvShowsContainer")
+# Get a reference to the DynamoDB table
+table_name = "Movies"
+table = dynamodb.Table(table_name)
 
 @app.get("/")
 async def root():
@@ -39,31 +44,33 @@ async def root():
 
 @app.get("/api/shows")
 async def get_tv_shows():
+    """
+    Fetch all TV shows from the DynamoDB table.
+    """
     try:
-        query = "SELECT c.id, c.title FROM c"
-        items = list(container.query_items(query=query, enable_cross_partition_query=True))
-        return items
+        response = table.scan(ProjectionExpression="id, title")
+        return response.get("Items", [])
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Error accessing Cosmos DB")
+        raise HTTPException(status_code=500, detail=f"Error accessing DynamoDB: {str(e)}")
 
 @app.get("/api/seasons")
 async def get_seasons(show_id: Optional[str] = Query(None, title="Show ID")):
+    """
+    Fetch seasons for a specific TV show by show_id.
+    """
     if not show_id:
-        raise HTTPException(status_code=400, detail="Please provide a show_id query parameter. If unaware of the showId, check out the /api/shows endpoint.")
+        raise HTTPException(
+            status_code=400,
+            detail="Please provide a show_id query parameter. If unaware of the showId, check out the /api/shows endpoint."
+        )
 
     try:
-        query = "SELECT c.seasons FROM c WHERE c.id = @showId"
-        parameters = [{"name": "@showId", "value": show_id}]
-        
-        items = list(container.query_items(
-            query=query,
-            parameters=parameters,
-            enable_cross_partition_query=True
-        ))
+        response = table.get_item(Key={"id": show_id})
+        item = response.get("Item")
 
-        if not items:
+        if not item or "seasons" not in item:
             return {"message": "No seasons found for the given show ID"}
-        
-        return items[0]
+
+        return {"seasons": item["seasons"]}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error querying Cosmos DB: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error querying DynamoDB: {str(e)}")

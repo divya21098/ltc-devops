@@ -29,7 +29,6 @@ jobs:
     
     env:
       AWS_REGION: us-west-1
-      DYNAMODB_TABLE: Movies-API
       
     steps:
       - name: Checkout

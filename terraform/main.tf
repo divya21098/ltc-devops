@@ -11,10 +11,6 @@ resource "aws_ecr_repository" "divya-reg" {
 #   repository_name = "my/service"
 #   image_tag       = "latest"
 # }
-
-provider "aws" {
-  region = "us-west-1"
-}
 resource "aws_dynamodb_table" "state__lock_table" {
   name         = "state-lock-bcvket"
   hash_key     = "LockID"

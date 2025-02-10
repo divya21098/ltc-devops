@@ -53,13 +53,8 @@ module "eks" {
   enable_cluster_creator_admin_permissions = true
 
   vpc_id                   = aws_vpc.main.id
-  subnet_ids               = [aws_subnet.subnet-1,aws_subnet.subnet-2]
-  control_plane_subnet_ids = [aws_subnet.subnet-1,aws_subnet.subnet-2]
-
-  # EKS Managed Node Group(s)
-#   eks_managed_node_group_defaults = {
-#     instance_types = ["m6i.large", "m5.large", "m5n.large", "m5zn.large"]
-#   }
+  subnet_ids               = [aws_subnet.subnet-1.id,aws_subnet.subnet-2.id]
+  control_plane_subnet_ids = [aws_subnet.subnet-1.id,aws_subnet.subnet-2.id]
 
   eks_managed_node_groups = {
     example = {

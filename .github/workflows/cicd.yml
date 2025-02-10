@@ -36,8 +36,6 @@ jobs:
       - name: Terraform Validate
         run: terraform validate -no-color
 
-      - name: tf unlock
-        run: terraform force-unlock 687776a5-b994-18ae-2692-eafc8eba7528
       - name: Terraform Plan
         run: terraform plan -no-color
         env:

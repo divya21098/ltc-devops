@@ -31,6 +31,14 @@ resource "aws_route_table" "rtab" {
     gateway_id = "local"
   }
 }
+resource "aws_route_table_association" "subnet_1_association"{
+    subnet_id = aws_subnet.subnet-1.id
+    route_table_id = aws_route_table.rtab.id
+}
+resource "aws_route_table_association" "subnet_2_association"{
+    subnet_id = aws_subnet.subnet-2.id
+    route_table_id = aws_route_table.rtab.id
+}
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"

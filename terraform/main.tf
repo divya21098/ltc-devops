@@ -7,7 +7,14 @@ resource "aws_ecr_repository" "divya-reg" {
   }
 }
 
+resource "aws_ecr_repository" "divya-reg2" {
+  name                 = "api"
+  image_tag_mutability = "MUTABLE"
 
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
 resource "aws_dynamodb_table" "state__lock_table" {
   name         = "state-lock-bcvket"
   hash_key     = "LockID"

@@ -42,7 +42,9 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      
+      - name: tf unlock
+        run: terraform force-unlock 687776a5-b994-18ae-2692-eafc8eba7528
+        
       - name: Terraform Apply
         run: terraform apply -auto-approve -no-color
         env:

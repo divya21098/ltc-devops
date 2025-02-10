@@ -36,7 +36,7 @@ jobs:
       - name: Terraform Validate
         run: terraform validate -no-color
       - name: Terraform destroy
-        run: terraform destroy
+        run: terraform destroy -target=aws_eks_node_group.this -auto-approve
 
       # - name: Terraform Plan
       #   run: terraform plan -no-color

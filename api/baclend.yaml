@@ -16,7 +16,7 @@ spec:
       spec:
         containers: 
         - name: api
-          image :
+          image : 490004643334.dkr.ecr.us-west-1.amazonaws.com/api
           ports: 
             containerPort: 8000
 ---

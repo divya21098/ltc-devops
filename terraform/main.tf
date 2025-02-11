@@ -1,20 +1,20 @@
-resource "aws_ecr_repository" "divya-reg" {
-  name                 = "node"
-  image_tag_mutability = "MUTABLE"
+# resource "aws_ecr_repository" "divya-reg" {
+#   name                 = "node"
+#   image_tag_mutability = "MUTABLE"
 
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-}
+#   image_scanning_configuration {
+#     scan_on_push = true
+#   }
+# }
 
-resource "aws_ecr_repository" "divya-reg2" {
-  name                 = "api"
-  image_tag_mutability = "MUTABLE"
+# resource "aws_ecr_repository" "divya-reg2" {
+#   name                 = "api"
+#   image_tag_mutability = "MUTABLE"
 
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-}
+#   image_scanning_configuration {
+#     scan_on_push = true
+#   }
+# }
 resource "aws_dynamodb_table" "state__lock_table" {
   name         = "state-lock-bcvket"
   hash_key     = "LockID"

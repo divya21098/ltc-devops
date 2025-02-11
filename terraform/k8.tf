@@ -39,44 +39,44 @@ resource "aws_route_table_association" "subnet_2_association"{
     subnet_id = aws_subnet.subnet-2.id
     route_table_id = aws_route_table.rtab.id
 }
-# module "eks" {
-#   source  = "terraform-aws-modules/eks/aws"
-#   version = "~> 20.0"
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 20.0"
 
-#   cluster_name    = "my-k8"
-#   cluster_version = "1.31"
+  cluster_name    = "my-k8"
+  cluster_version = "1.31"
 
-#   bootstrap_self_managed_addons = false
-#   cluster_addons = {
-#     coredns                = {}
-#     eks-pod-identity-agent = {}
-#     kube-proxy             = {}
-#     vpc-cni                = {}
-#   }
+  bootstrap_self_managed_addons = false
+  cluster_addons = {
+    coredns                = {}
+    eks-pod-identity-agent = {}
+    kube-proxy             = {}
+    vpc-cni                = {}
+  }
 
-#   # Optional
-#   cluster_endpoint_public_access = true
+  # Optional
+  cluster_endpoint_public_access = true
 
-#   # Optional: Adds the current caller identity as an administrator via cluster access entry
-#   enable_cluster_creator_admin_permissions = true
+  # Optional: Adds the current caller identity as an administrator via cluster access entry
+  enable_cluster_creator_admin_permissions = true
 
-#   vpc_id                   = aws_vpc.main.id
-#   subnet_ids               = [aws_subnet.subnet-1.id,aws_subnet.subnet-2.id]
-#   control_plane_subnet_ids = [aws_subnet.subnet-1.id,aws_subnet.subnet-2.id]
+  vpc_id                   = aws_vpc.main.id
+  subnet_ids               = [aws_subnet.subnet-1.id,aws_subnet.subnet-2.id]
+  control_plane_subnet_ids = [aws_subnet.subnet-1.id,aws_subnet.subnet-2.id]
 
-#   eks_managed_node_groups = {
-#     example = {
-#       # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
-#       instance_types = ["t2.medium"]
+  eks_managed_node_groups = {
+    example = {
+      # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
+      instance_types = ["t2.medium"]
 
-#       min_size     = 1
-#       max_size     = 1
-#       desired_size = 1
-#     }
-#   }
+      min_size     = 1
+      max_size     = 1
+      desired_size = 1
+    }
+  }
 
-#   tags = {
-#     Environment = "dev"
-#     Terraform   = "true"
-#   }
-# }
+  tags = {
+    Environment = "dev"
+    Terraform   = "true"
+  }
+}
